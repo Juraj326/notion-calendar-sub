@@ -1,0 +1,13 @@
+[project]
+name = "notion-calendar-sub"
+version = "1.0.0"
+description = "Simple calendar subscription feed for Notion Databases"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.132.0",
+    "icalendar>=7.0.1",
+    "notion-client>=3.0.0",
+    "pydantic-settings>=2.13.1",
+    "uvicorn>=0.41.0",
+]
