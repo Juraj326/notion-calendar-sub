@@ -54,7 +54,6 @@ Add `http://localhost:8000/calendar/{YOUR_TOKEN}.ics` in your calendar app
 │   ├── calendar.py   # ICS generation
 │   └── config.py     # Environment configuration
 ├── Dockerfile
-├── docker-compose.yml
 ├── fly.toml
 └── pyproject.toml
 ```
