@@ -22,7 +22,7 @@ class Assignment:
     abbreviation: str | None
     course: str
     type: str
-    maxPoints: float | None
+    maxPoints: int | float | None
     url: str
 
 
@@ -32,68 +32,61 @@ def strToDate(value: str) -> date | datetime:
     return date.fromisoformat(value)
 
 
-def parseDateRange(properties: dict) -> None | tuple[date | datetime, date | datetime]:
-    start, end = extract.date(properties, "Date")
-    if start is None:
-        return None
-
-    if end is None:
-        end = start
+def getDatesFromProperty(prop: dict) -> tuple[date | datetime, date | datetime]:
+    start, end = extract.date(prop)
 
     startDate, endDate = strToDate(start), strToDate(end)
     if isinstance(endDate, date) and not isinstance(endDate, datetime):
         endDate = endDate + timedelta(days=1)
-
     return startDate, endDate
 
 
-def assignmentFromPage(page: dict) -> Assignment | None:
+def assignmentFromPage(page: dict) -> Assignment:
     properties = page["properties"]
 
-    dates = parseDateRange(properties)
-    if dates is None:
-        return None
-    startDate, endDate = dates
+    startDate, endDate = getDatesFromProperty(properties["Date"])
 
     return Assignment(
         id=page["id"],
         startDate=startDate,
         endDate=endDate,
-        name=extract.title(properties, "Name") or "Untitled",
-        abbreviation=extract.rollup(properties, "Abbreviation"),
-        course=extract.rollup(properties, "Course") or "Unknown course",
-        type=extract.select(properties, "Type") or "Unknown type",
-        maxPoints=extract.number(properties, "Max"),
+        name=extract.title(properties["Name"]) or "Untitled",
+        abbreviation=extract.rollup(properties["Abbreviation"]),
+        course=extract.rollup(properties["Course"]) or "Unknown course",
+        type=extract.select(properties["Type"]) or "Unknown type",
+        maxPoints=extract.number(properties["Max"]),
         url=page["url"],
     )
 
 
 def fetchAssignments() -> list[Assignment]:
-    result: list[Assignment] = list()
-    hasMore: bool = True
-    nextCursor = None
+    result = list()
+    hasMore = True
+    cursor = None
 
     while hasMore:
         try:
             response = notion.data_sources.query(
                 data_source_id=settings.NOTION_DATABASE_ID,
+                filter={"property": "Date", "date": {"is_not_empty": True}},
                 sorts=[{"property": "Date", "direction": "ascending"}],
-                start_cursor=nextCursor,
+                start_cursor=cursor,
             )
         except APIResponseError as e:
             log.error(f"Notion API error: {e}")
-            return list()
+            break
 
         response = cast(dict[str, Any], response)
 
         for page in response["results"]:
-            assignment = assignmentFromPage(page)
-            if assignment is None:
-                continue
+            try:
+                result.append(assignmentFromPage(page))
+            except AssertionError:
+                log.warning(
+                    f"Skipping page {page['id']} due to corrupted date property"
+                )
 
-            result.append(assignment)
-
-        hasMore = response.get("has_more", False)
-        nextCursor = response.get("next_cursor")
+        hasMore = response["has_more"]
+        cursor = response["next_cursor"]
 
     return result
