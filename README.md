@@ -1,6 +1,6 @@
 # Notion Calendar Subscription
 
-A small python application that generates a subscription calendar for a Notion assignment database.
+A small python application that generates a subscription calendar for a Notion specific database.
 
 ## Setup
 
@@ -30,8 +30,10 @@ Copy `.env.example` to `.env` and fill in your values
 | Variable | Description |
 |----------|-------------|
 | `NOTION_API_KEY` | Your Notion integration token |
-| `NOTION_DATABASE_ID` | The ID of your Notion database |
-| `CALENDAR_NAME` | Name shown in calendar apps (default: "Assignments") |
+| `ASSIGNMENTS_DATABASE_ID` | The ID of your Notion assignments database |
+| `SUBSCRIPTIONS_DATABASE_ID` | The ID of your Notion subscriptions database |
+| `ASSIGNMENTS_CALENDAR_NAME` | Name shown in calendar apps (default: "Assignments") |
+| `SUBSCRIPTIONS_CALENDAR_NAME` | Name shown in calendar apps (default: "Subscriptions") |
 | `TOKEN` | Secret token for the calendar URL |
 
 ### 4. Start the app
@@ -41,7 +43,7 @@ uv sync
 uv run uvicorn app.main:app --reload
 ```
 
-Add `http://localhost:8000/calendar/{YOUR_TOKEN}.ics` in your calendar app
+Add `http://localhost:8000/{YOUR_TOKEN}/{CALENDAR_NAME}.ics` in your calendar app
 
 ## Project Structure
 
@@ -50,6 +52,7 @@ Add `http://localhost:8000/calendar/{YOUR_TOKEN}.ics` in your calendar app
 │   ├── __init__.py   # Package marker
 │   ├── main.py       # FastAPI routes
 │   ├── notion.py     # Notion API integration
+│   ├── domain.py     # Data models
 │   ├── extract.py    # Notion property extraction helpers
 │   ├── calendar.py   # ICS generation
 │   └── config.py     # Environment configuration

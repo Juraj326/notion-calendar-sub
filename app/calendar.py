@@ -1,28 +1,33 @@
 from icalendar import Calendar, Event
 
-from app.config import settings
-from app.notion import Assignment
+from app.domain import Assignment, Subscription
 
 
-def createCalendar() -> Calendar:
+def createCalendar(name: str) -> Calendar:
     calendar = Calendar()
     calendar.add("prodid", "-//Notion Calendar Sub//notion-calendar-sub//")
     calendar.add("version", "2.0")
     calendar.add("calscale", "GREGORIAN")
     calendar.add("method", "PUBLISH")
-    calendar.add("x-wr-calname", settings.CALENDAR_NAME)
+    calendar.add("x-wr-calname", name)
 
     return calendar
 
 
-def createEvent(assignment: Assignment) -> Event:
+def createEvent(data: Assignment | Subscription) -> Event:
+    if isinstance(data, Assignment):
+        return createAssignmentEvent(data)
+    return createSubscriptionEvent(data)
+
+
+def createAssignmentEvent(assignment: Assignment) -> Event:
     event = Event()
 
     description = f"{assignment.course}\n{assignment.type}"
     if assignment.maxPoints is not None:
         description += f"\n{assignment.maxPoints}"
 
-    event.add("uid", f"{assignment.id}@notion-calendar-sub")
+    event.add("uid", f"{assignment.id}@notion-assignments-sub")
     prefix = "" if assignment.abbreviation is None else f"{assignment.abbreviation}: "
     event.add("summary", prefix + assignment.name)
     event.add("dtstart", assignment.startDate)
@@ -33,10 +38,25 @@ def createEvent(assignment: Assignment) -> Event:
     return event
 
 
-def generateICS(assignments: list[Assignment]) -> bytes:
-    calendar = createCalendar()
+def createSubscriptionEvent(subscription: Subscription) -> Event:
+    event = Event()
 
-    for assignment in assignments:
-        calendar.add_component(createEvent(assignment))
+    description = f"{subscription.billing}\n{subscription.cost}"
+
+    event.add("uid", f"{subscription.id}@notion-subscriptions-sub")
+    event.add("summary", subscription.service)
+    event.add("dtstart", subscription.billingDate)
+    event.add("description", description)
+    if subscription.url is not None:
+        event.add("url", subscription.url)
+
+    return event
+
+
+def generateICS(calendarName: str, data: list[Assignment | Subscription]) -> bytes:
+    calendar = createCalendar(calendarName)
+
+    for dataComponent in data:
+        calendar.add_component(createEvent(dataComponent))
 
     return calendar.to_ical()

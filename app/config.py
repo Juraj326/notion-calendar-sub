@@ -5,8 +5,10 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 
     NOTION_API_KEY: str
-    NOTION_DATABASE_ID: str
-    CALENDAR_NAME: str = "Assignments"
+    ASSIGNMENTS_DATABASE_ID: str
+    ASSIGNMENTS_CALENDAR_NAME: str = "Assignments"
+    SUBSCRIPTIONS_DATABASE_ID: str
+    SUBSCRIPTIONS_CALENDAR_NAME: str = "Subscriptions"
     TOKEN: str
 
 
