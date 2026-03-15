@@ -46,3 +46,21 @@ def rollup(prop: dict) -> str | None:
 def number(prop: dict) -> int | float | None:
     value = parseProperty(prop)
     return value if isinstance(value, (int, float)) else None
+
+
+def dateFormula(prop: dict) -> str | None:
+    value = parseProperty(prop)
+    if not isinstance(value, dict):
+        return None
+
+    date = value.get("start")
+    return date if isinstance(date, str) else None
+
+
+def databaseID(page: dict) -> str | None:
+    parent = page.get("parent")
+    if not isinstance(parent, dict):
+        return None
+
+    value = parent.get("database_id")
+    return value if isinstance(value, str) else None

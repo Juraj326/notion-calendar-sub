@@ -1,6 +1,6 @@
 [project]
 name = "notion-calendar-sub"
-version = "1.0.0"
+version = "1.1.0"
 description = "Simple calendar subscription feed for Notion Databases"
 readme = "README.md"
 requires-python = ">=3.14"
