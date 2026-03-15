@@ -37,7 +37,7 @@ def fetchData(calendarName: str) -> list[Assignment | Subscription]:
 
 
 def queryBuilder(
-    datasourceID: str, cursor: None, filter: dict | None, sorts: list[dict] | None
+    datasourceID: str, cursor: str | None, filter: dict | None, sorts: list[dict] | None
 ):
     query: dict[str, Any] = {"data_source_id": datasourceID, "start_cursor": cursor}
     if filter:
@@ -88,7 +88,7 @@ def fetchPages(
 
 
 def dataFromPage(page: dict) -> Assignment | Subscription | None:
-    databaseID = extract.databaseID
+    databaseID = extract.databaseID(page)
     if databaseID is None:
         return None
 

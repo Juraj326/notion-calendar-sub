@@ -1,6 +1,6 @@
 # Notion Calendar Subscription
 
-A small python application that generates a subscription calendar for a Notion specific database.
+A small python application that generates a subscription calendar for a specific Notion database.
 
 ## Setup
 
@@ -43,7 +43,7 @@ uv sync
 uv run uvicorn app.main:app --reload
 ```
 
-Add `http://localhost:8000/{YOUR_TOKEN}/{CALENDAR_NAME}.ics` in your calendar app
+Add `http://localhost:8000/{YOUR_TOKEN}/{CALENDAR_NAME}.ics` (e.g. assignments calendar) in your calendar app
 
 ## Project Structure
 
