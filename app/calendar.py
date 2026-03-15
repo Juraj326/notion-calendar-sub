@@ -41,7 +41,7 @@ def createAssignmentEvent(assignment: Assignment) -> Event:
 def createSubscriptionEvent(subscription: Subscription) -> Event:
     event = Event()
 
-    description = f"{subscription.billing}\n{subscription.cost}"
+    description = f"{subscription.billing}\n{subscription.cost:.2f}€"
 
     event.add("uid", f"{subscription.id}@notion-subscriptions-sub")
     event.add("summary", subscription.service)
