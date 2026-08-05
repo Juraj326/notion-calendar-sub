@@ -40,7 +40,7 @@ Copy `.env.example` to `.env` and fill in your values
 
 ```bash
 uv sync
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.app:app --reload
 ```
 
 Add `http://localhost:8000/{YOUR_TOKEN}/{CALENDAR_NAME}.ics` (e.g. assignments calendar) in your calendar app
@@ -56,7 +56,5 @@ Add `http://localhost:8000/{YOUR_TOKEN}/{CALENDAR_NAME}.ics` (e.g. assignments c
 │   ├── extract.py    # Notion property extraction helpers
 │   ├── calendar.py   # ICS generation
 │   └── config.py     # Environment configuration
-├── Dockerfile
-├── fly.toml
 └── pyproject.toml
 ```
