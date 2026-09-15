@@ -36,9 +36,7 @@ def fetchData(calendarName: str) -> list[Assignment | Subscription]:
     return fetchPages(retrieveDatasourceID(settings.SUBSCRIPTIONS_DATABASE_ID))
 
 
-def queryBuilder(
-    datasourceID: str, cursor: str | None, filter: dict | None, sorts: list[dict] | None
-):
+def queryBuilder(datasourceID: str, cursor: str | None, filter: dict | None, sorts: list[dict] | None):
     query: dict[str, Any] = {"data_source_id": datasourceID, "start_cursor": cursor}
     if filter:
         query["filter"] = filter
@@ -77,9 +75,7 @@ def fetchPages(
                     continue
                 result.append(data)
             except AssertionError:
-                log.warning(
-                    f"Skipping page {page['id']} due to corrupted date property"
-                )
+                log.warning(f"Skipping page {page['id']} due to corrupted date property")
 
         hasMore = response["has_more"]
         cursor = response["next_cursor"]
@@ -108,7 +104,7 @@ def assignmentFromPage(page: dict) -> Assignment:
         endDate=endDate,
         name=extract.title(properties["Name"]) or "Untitled",
         abbreviation=extract.rollup(properties["Abbreviation"]),
-        course=extract.rollup(properties["Course"]) or "Unknown course",
+        course=extract.rollup(properties["Course Rollup"]) or "Unknown course",
         type=extract.select(properties["Type"]) or "Unknown type",
         maxPoints=extract.number(properties["Max"]),
         url=page["url"],
