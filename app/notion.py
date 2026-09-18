@@ -104,7 +104,7 @@ def assignmentFromPage(page: dict) -> Assignment:
         endDate=endDate,
         name=extract.title(properties["Name"]) or "Untitled",
         abbreviation=extract.rollup(properties["Abbreviation"]),
-        course=extract.rollup(properties["Course Rollup"]) or "Unknown course",
+        course=extract.rollup(properties["Course"]) or "Unknown course",
         type=extract.select(properties["Type"]) or "Unknown type",
         maxPoints=extract.number(properties["Max"]),
         url=page["url"],
